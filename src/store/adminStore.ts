@@ -15,7 +15,6 @@ export interface AdminStore {
     setCurrentUser: (user: AdminUser | null) => void;
     axiosInstance: ReturnType<typeof axios.create>;
 
-    // CRUD методы
     createAdmin: (admin: Omit<AdminUser, 'id'>) => Promise<AdminUser>;
     getAdmins: () => Promise<AdminUser[]>;
     getAdminById: (id: number) => Promise<AdminUser>;
@@ -30,18 +29,14 @@ export const adminStore = create<AdminStore>()(
             setCurrentUser: (user) => {
                 set({ currentUser: user });
 
-                // Настраиваем Axios Interceptor при установке currentUser
                 if (user) {
                     get().axiosInstance.interceptors.request.use((config) => {
-                        console.log('Добавляем заголовки:', { login: user.login, password: user.password });
-
                         config.headers['login'] = user.login;
                         config.headers['password'] = user.password;
-                        console.log(config);
                         return config;
                     });
                 } else {
-                    // Удаляем Interceptor, если currentUser сброшен
+
                     get().axiosInstance.interceptors.request.clear();
                 }
             },
@@ -49,7 +44,6 @@ export const adminStore = create<AdminStore>()(
                 baseURL: URL,
             }),
 
-            // CRUD методы
             createAdmin: async (admin) => {
                 const response = await get().axiosInstance.post<AdminUser>('/admins', admin);
                 return response.data;
