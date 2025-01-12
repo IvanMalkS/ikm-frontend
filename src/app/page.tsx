@@ -1,62 +1,26 @@
 "use client";
-import { useStore } from '@/store/globalStore';
-import { Button } from 'antd';
-import { useRouter } from 'next/navigation';
-import {useEffect} from "react";
+
+import { Layout, Menu, Typography } from 'antd';
+import Link from 'next/link';
+
+const { Header, Content } = Layout;
+const { Title } = Typography;
 
 export default function Home() {
-    const router = useRouter(); // Хук для перенаправления
+    return (
+        <Layout className="min-h-screen">
+            {/* Хедер */}
 
-    const { isAdmin, setAdmin } = useStore((state) => ({
-        isAdmin: state.isAdmin,
-        setAdmin: state.setAdmin,
-     }));
 
-    useEffect(() => {
-        if (isAdmin !== null) {
-            router.push(isAdmin ? '/admin' : '/employee');
-        }
-    }, [isAdmin, router]);
-
-  return (
-      <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100vh',
-            gap: '16px',
-          }}
-      >
-
-        {isAdmin === null && (
-            <>
-              <Button
-                  type="primary"
-                  onClick={() => setAdmin(true)} // Устанавливаем роль "Админ"
-                  style={{
-                    width: '200px',
-                  }}
-              >
-                Я админ
-              </Button>
-              <Button
-                  onClick={() => setAdmin(false)} // Устанавливаем роль "Пользователь"
-                  style={{
-                    width: '200px',
-                  }}
-              >
-                Я пользователь
-              </Button>
-            </>
-        )}
-
-        {isAdmin !== null && (
-            <div>
-              <p>Вы {isAdmin ? "админ" : "пользователь"}.</p>
-            </div>
-        )}
-      </div>
-  );
+            {/* Контент */}
+            <Content className="p-8">
+                <div className="text-center">
+                    <Title level={2}>Welcome to the Admin Panel</Title>
+                    <p className="text-lg">
+                        Use the navigation above to explore different sections.
+                    </p>
+                </div>
+            </Content>
+        </Layout>
+    );
 }

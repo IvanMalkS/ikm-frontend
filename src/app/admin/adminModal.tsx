@@ -3,11 +3,10 @@ import { useStore } from '@/store/adminStore';
 import { Form, Input, Button, message } from 'antd';
 import { useState} from 'react';
 
-export default function Home() {
+export const AdminModal = () =>  {
     const setCurrentUser = useStore((state) => state.setCurrentUser);
     const getAdmins = useStore((state) => state.getAdmins);
     const [loading, setLoading] = useState(false); // Состояние для индикатора загрузки
-
 
 
     const onFinish = async (values: { login: string; password: string }) => {

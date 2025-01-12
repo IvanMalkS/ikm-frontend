@@ -23,6 +23,7 @@ interface Project {
     id: number;
     projectName: string;
     projectDescription: string;
+    costed: number;
     employees: Employee[];
     employeeProjects: EmployeeProject[];
 }
@@ -64,14 +65,19 @@ export const projectStore = create<ProjectState>()(
             updateProject: async (id, project) => {
                 try {
                     const { currentUser } = adminStore.getState();
-                    const response = await axios.put(`${URL}/${id}`, project, {
+                    const updatedFields = {
+                        projectName: project.projectName,
+                        projectDescription: project.projectDescription,
+                        costed: project.costed
+                    };
+                    const response = await axios.patch(`${URL}/${id}`, updatedFields, {
                         headers: {
                             'login': currentUser?.login,
                             'password': currentUser?.password
                         }
                     });
                     set({
-                        projects: get().projects.map(p => (p.id === id ? response.data : p)),
+                        projects: get().projects.map(p => (p.id === id ? { ...p, ...response.data } : p)),
                     });
                 } catch (error) {
                     console.error('Error updating project:', error);
@@ -80,7 +86,8 @@ export const projectStore = create<ProjectState>()(
             deleteProject: async (id) => {
                 try {
                     const { currentUser } = adminStore.getState();
-                    if (!currentUser.login || !currentUser.password || !currentUser) {
+
+                    if (!currentUser) {
                         console.error('Error deleting project: currentUser is null', );
                     }
                     await axios.delete(`${URL}/${id}`, {
@@ -89,9 +96,11 @@ export const projectStore = create<ProjectState>()(
                             'password': currentUser.password
                         }
                     });
-                    set({ projects: get().projects.filter(p => p.id !== id) });
                 } catch (error) {
                     console.error('Error deleting project:', error);
+                }
+                finally {
+                    set({ projects: get().projects.filter(p => p.id !== id) });
                 }
             },
         }),
