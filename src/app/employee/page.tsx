@@ -21,7 +21,7 @@ export default function Page() {
     }, [fetchEmployees]);
 
     if (isLoading) {
-        return <div>Loading employees...</div>; // Индикатор загрузки
+        return <div>Loading employees...</div>;
     }
 
     const showModal = () => {
@@ -36,15 +36,19 @@ export default function Page() {
                 lastName: values.lastName,
                 position: values.position,
                 isActive: values.isActive,
-                projectIds: values.projectIds || [], // Передаем выбранные ID проектов
+                projectIds: values.projectIds || [],
                 employeeProjectIds: [],
                 scheduleIds: []
             };
             await createEmployee(newEmployee);
             setIsModalVisible(false);
             form.resetFields();
+            fetchEmployees();
         } catch (errorInfo) {
             console.error('Failed to create employee:', errorInfo);
+            setIsModalVisible(false);
+            form.resetFields();
+            fetchEmployees();
         }
     };
 
@@ -65,7 +69,7 @@ export default function Page() {
             lastName: employee.lastName,
             position: employee.position,
             isActive: employee.isActive,
-            projectIds: employee.projectNames || [] // Устанавливаем текущие ID проектов
+            projectIds: employee.projectNames || []
         });
         setIsUpdateModalVisible(true);
     };
@@ -83,13 +87,17 @@ export default function Page() {
                 lastName: values.lastName,
                 position: values.position,
                 isActive: values.isActive,
-                projectIds: values.projectIds // Обновляем ID проектов
+                projectIds: values.projectIds
             };
             await updateEmployee(currentEmployee.id, updatedEmployee);
             setIsUpdateModalVisible(false);
             updateForm.resetFields();
+            fetchEmployees();
         } catch (errorInfo) {
             console.error('Failed to update employee:', errorInfo);
+            setIsUpdateModalVisible(false);
+            updateForm.resetFields();
+            fetchEmployees();
         }
     };
 
@@ -100,6 +108,7 @@ export default function Page() {
 
     const handleDeleteEmployee = async (id) => {
         await deleteEmployee(id);
+        fetchEmployees();
     };
 
     return (

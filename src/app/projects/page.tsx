@@ -30,7 +30,7 @@ export default function Page() {
             const newProject = {
                 projectName: values.projectName,
                 projectDescription: values.projectDescription,
-                costed: Number(values.costed), // Преобразование в число
+                costed: Number(values.costed),
                 employees: [],
                 employeeProjects: []
             };
@@ -71,7 +71,7 @@ export default function Page() {
                 ...currentProject,
                 projectName: values.projectName,
                 projectDescription: values.projectDescription,
-                costed: Number(values.costed) // Преобразование в число
+                costed: Number(values.costed)
             };
             await updateProject(currentProject.id, updatedProject);
             setIsUpdateModalVisible(false);
@@ -108,7 +108,7 @@ export default function Page() {
                             description={project.projectDescription}
                         />
                         {( !project.costed && (<p>free</p>) )}
-                        {( project.costed && (<p>Costed: {project.costed}</p>))}
+                        {( project.costed && (<p>Costed: {project.costed}$</p>))}
                         <div className="flex justify-between mt-4">
                             <Button type="primary" disabled={!currentUser} onClick={() => handleUpdateProject(project.id)}>Update</Button>
                             <Button type="primary" disabled={!currentUser} danger onClick={() => handleDeleteProject(project.id)}>Delete</Button>
@@ -140,7 +140,17 @@ export default function Page() {
                     <Item
                         name="costed"
                         label="Project Costed"
-                        rules={[{ required: false, message: 'Please input the project cost!'}]}
+                        rules={[
+                            { required: false, message: 'Please input the project cost!' },
+                            {
+                                validator: (_, value) => {
+                                    if (value < 0) {
+                                        return Promise.reject(new Error('Costed value cannot be less than zero!'));
+                                    }
+                                    return Promise.resolve();
+                                }
+                            }
+                        ]}
                     >
                         <Input type="number" />
                     </Item>
@@ -170,7 +180,17 @@ export default function Page() {
                     <Item
                         name="costed"
                         label="Project Costed"
-                        rules={[{ required: false, message: 'Please input the project cost!'}]}
+                        rules={[
+                            { required: false, message: 'Please input the project cost!' },
+                            {
+                                validator: (_, value) => {
+                                    if (value < 0) {
+                                        return Promise.reject(new Error('Costed value cannot be less than zero!'));
+                                    }
+                                    return Promise.resolve();
+                                }
+                            }
+                        ]}
                     >
                         <Input type="number" />
                     </Item>
