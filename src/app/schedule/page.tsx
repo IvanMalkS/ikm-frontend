@@ -99,7 +99,7 @@ export default function SchedulePage() {
     return (
         <div className="p-4">
             <Title level={2} className="text-center mb-4">Schedules</Title>
-            <Button type="primary" onClick={showModal} className="mb-4 w-full" disabled={!currentUser}>Create Schedule</Button>
+            <Button type="primary" onClick={showModal} className="mb-4 w-full">Create Schedule</Button>
             <List
                 itemLayout="vertical"
                 size="large"

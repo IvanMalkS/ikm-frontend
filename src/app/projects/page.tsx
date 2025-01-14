@@ -110,8 +110,8 @@ export default function Page() {
                         {( !project.costed && (<p>free</p>) )}
                         {( project.costed && (<p>Costed: {project.costed}</p>))}
                         <div className="flex justify-between mt-4">
-                            <Button type="primary" onClick={() => handleUpdateProject(project.id)}>Update</Button>
-                            <Button type="primary" danger onClick={() => handleDeleteProject(project.id)}>Delete</Button>
+                            <Button type="primary" disabled={!currentUser} onClick={() => handleUpdateProject(project.id)}>Update</Button>
+                            <Button type="primary" disabled={!currentUser} danger onClick={() => handleDeleteProject(project.id)}>Delete</Button>
                         </div>
                     </List.Item>
                 )}
