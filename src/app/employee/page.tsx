@@ -69,7 +69,7 @@ export default function Page() {
             lastName: employee.lastName,
             position: employee.position,
             isActive: employee.isActive,
-            projectIds: employee.projectNames || []
+            projectIds: employee.projectIds  || []
         });
         setIsUpdateModalVisible(true);
     };

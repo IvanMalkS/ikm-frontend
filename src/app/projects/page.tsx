@@ -1,15 +1,15 @@
-"use client"
+"use client";
 import { useEffect, useState } from 'react';
 import { projectStore } from "@/store/projectStore";
 import { Button, List, Typography, Modal, Form, Input } from 'antd';
-import {adminStore} from "@/store/adminStore";
+import { adminStore } from "@/store/adminStore";
 
 const { Title } = Typography;
 const { Item } = Form;
 
 export default function Page() {
     const { projects, fetchProjects, createProject, updateProject, deleteProject } = projectStore();
-    const {currentUser} = adminStore()
+    const { currentUser } = adminStore();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
     const [currentProject, setCurrentProject] = useState(null);
@@ -29,8 +29,8 @@ export default function Page() {
             const values = await form.validateFields();
             const newProject = {
                 projectName: values.projectName,
-                projectDescription: values.projectDescription,
-                costed: Number(values.costed),
+                projectDescription: values.projectDescription || '',
+                costed: values.costed !== undefined ? Number(values.costed) : null,
                 employees: [],
                 employeeProjects: []
             };
@@ -50,7 +50,8 @@ export default function Page() {
     const handleUpdateProject = async (id: number) => {
         const project = projects.find(project => project.id === id);
         if (!project) {
-            console.error('project is undefined')
+            console.error('project is undefined');
+            return;
         }
         setCurrentProject(project);
         updateForm.setFieldsValue({
@@ -65,13 +66,14 @@ export default function Page() {
         try {
             const values = await updateForm.validateFields();
             if (!currentProject) {
-                console.error('project is undefined')
+                console.error('project is undefined');
+                return;
             }
             const updatedProject = {
                 ...currentProject,
                 projectName: values.projectName,
-                projectDescription: values.projectDescription,
-                costed: Number(values.costed)
+                projectDescription: values.projectDescription || '',
+                costed: values.costed !== undefined ? Number(values.costed) : null
             };
             await updateProject(currentProject.id, updatedProject);
             setIsUpdateModalVisible(false);
@@ -104,11 +106,11 @@ export default function Page() {
                         className="p-4 border rounded-lg shadow-md mb-4"
                     >
                         <List.Item.Meta
-                            title={<h2 >{project.projectName}</h2>}
+                            title={<h2>{project.projectName}</h2>}
                             description={project.projectDescription}
                         />
-                        {( !project.costed && (<p>free</p>) )}
-                        {( project.costed && (<p>Costed: {project.costed}$</p>))}
+                        {(!project.costed && <p>free</p>)}
+                        {(project.costed && <p>Costed: {project.costed}$</p>)}
                         <div className="flex justify-between mt-4">
                             <Button type="primary" disabled={!currentUser} onClick={() => handleUpdateProject(project.id)}>Update</Button>
                             <Button type="primary" disabled={!currentUser} danger onClick={() => handleDeleteProject(project.id)}>Delete</Button>
@@ -133,7 +135,6 @@ export default function Page() {
                     <Item
                         name="projectDescription"
                         label="Project Description"
-                        rules={[{ required: true, message: 'Please input the project description!' }]}
                     >
                         <Input.TextArea />
                     </Item>
@@ -141,11 +142,10 @@ export default function Page() {
                         name="costed"
                         label="Project Costed"
                         rules={[
-                            { required: false, message: 'Please input the project cost!' },
                             {
                                 validator: (_, value) => {
-                                    if (value < 0) {
-                                        return Promise.reject(new Error('Costed value cannot be less than zero!'));
+                                    if (value !== undefined && (isNaN(value) || value < 0)) {
+                                        return Promise.reject(new Error('Costed value must be a non-negative number!'));
                                     }
                                     return Promise.resolve();
                                 }
@@ -173,7 +173,6 @@ export default function Page() {
                     <Item
                         name="projectDescription"
                         label="Project Description"
-                        rules={[{ required: true, message: 'Please input the project description!' }]}
                     >
                         <Input.TextArea />
                     </Item>
@@ -181,11 +180,10 @@ export default function Page() {
                         name="costed"
                         label="Project Costed"
                         rules={[
-                            { required: false, message: 'Please input the project cost!' },
                             {
                                 validator: (_, value) => {
-                                    if (value < 0) {
-                                        return Promise.reject(new Error('Costed value cannot be less than zero!'));
+                                    if (value !== undefined && (isNaN(value) || value < 0)) {
+                                        return Promise.reject(new Error('Costed value must be a non-negative number!'));
                                     }
                                     return Promise.resolve();
                                 }
@@ -198,4 +196,4 @@ export default function Page() {
             </Modal>
         </div>
     );
-};
+}

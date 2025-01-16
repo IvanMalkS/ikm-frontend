@@ -1,12 +1,12 @@
 import { Select } from 'antd';
 import { useEffect, useState } from 'react';
-import { projectStore } from '@/store/projectStore'; // Импортируйте ваш стор
+import { projectStore } from '@/store/projectStore';
 
 const { Option } = Select;
 
 interface ProjectSelectProps {
-    value?: number[]; // Выбранные ID проектов
-    onChange?: (value: number[]) => void; // Обработчик изменения выбора
+    value?: number[];
+    onChange?: (value: number[]) => void;
 }
 
 export const ProjectSelect = ({ value, onChange }: ProjectSelectProps) => {
